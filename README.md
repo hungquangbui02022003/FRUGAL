@@ -1,4 +1,4 @@
-# Supplementary code for ''FRUGAL: Memory-Efficient Optimization by Reducing State Overhead for Scalable Training''
+# Supplementary code for [''FRUGAL: Memory-Efficient Optimization by Reducing State Overhead for Scalable Training''](https://arxiv.org/abs/2411.07837)
 
 ## How to install
 
