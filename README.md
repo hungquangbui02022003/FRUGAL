@@ -58,5 +58,3 @@ The code for pre-training experiments is based on the Galore repository.
 Scripts for reproducing the experimental results on fine-tuning RoBERTa on the GLUE benchmark are located in the `scripts/glue` folder. In this folder, you can find scripts to run experiments with `rank=8` and `rank=0`. Note that, unlike the pre-training experiments, the `density` parameter takes very small values, so I have set it to allow specifying `density` through the `rank`.
 
 The main code for fine-tuning is in `run_glue.py` and is an adaptation of the `run_glue.py` file from `transformers` library. The `transformers.Trainer` is used for training, so in addition to arguments for **FRUGAL**, you can specify standard arguments from the `TrainingArguments`, such as `gradient_accumulation_steps`, `fp16`, and others.
-
-"# FRUGAL" 
