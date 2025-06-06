@@ -115,3 +115,4 @@ The main code for fine-tuning is in `run_glue.py` and is an adaptation of the `r
 
 Notebook `principal_angles.ipynb` can be used to reproduce Figure 2. `galore_re-projection.ipynb` contains code for Appendix C experiments (Figure 3).
 "# FRUGAL-v2" 
+"# FRUGAL-v2" 
