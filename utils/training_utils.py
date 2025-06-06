@@ -261,6 +261,18 @@ def get_optimizer(param_groups, args, model=None):
             # galore specific
             proj_side=args.proj_side,
             proj_type=args.proj_type,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # adam specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay, eps=args.eps)
     elif args.optimizer.lower() == "coord_adamw":
@@ -274,6 +286,18 @@ def get_optimizer(param_groups, args, model=None):
             inactive_lr_scale=args.inactive_lr_scale,
             # coord specific
             coord_choice=args.coord_choice,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # adam specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay, eps=args.eps)
     elif args.optimizer.lower() == "block_adamw":
@@ -285,8 +309,20 @@ def get_optimizer(param_groups, args, model=None):
             reset_statistics=args.reset_statistics,
             inactive_update_rule=args.inactive_update_rule,
             inactive_lr_scale=args.inactive_lr_scale,
-            # coord specific
+            # block specific
             block_order=args.block_order,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # adam specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay, eps=args.eps)
     elif args.optimizer.lower() == "lion":
@@ -303,6 +339,18 @@ def get_optimizer(param_groups, args, model=None):
             # galore specific
             proj_side=args.proj_side,
             proj_type=args.proj_type,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # lion specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay)
     elif args.optimizer.lower() == "coord_lion":
@@ -316,6 +364,18 @@ def get_optimizer(param_groups, args, model=None):
             inactive_lr_scale=args.inactive_lr_scale,
             # coord specific
             coord_choice=args.coord_choice,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # lion specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay)
     elif args.optimizer.lower() == "block_lion":
@@ -327,8 +387,20 @@ def get_optimizer(param_groups, args, model=None):
             reset_statistics=args.reset_statistics,
             inactive_update_rule=args.inactive_update_rule,
             inactive_lr_scale=args.inactive_lr_scale,
-            # coord specific
+            # block specific
             block_order=args.block_order,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # lion specific
             betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay)
     # implement sgd
@@ -346,6 +418,18 @@ def get_optimizer(param_groups, args, model=None):
             # galore specific
             proj_side=args.proj_side,
             proj_type=args.proj_type,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # sgd specific
             lr=args.lr, momentum=args.beta1, dampening=args.dampening, weight_decay=args.weight_decay, nesterov=args.nesterov, sign_update=args.sgd_sign_update)
     elif args.optimizer.lower() == "coord_sgd":
@@ -357,8 +441,20 @@ def get_optimizer(param_groups, args, model=None):
             reset_statistics=args.reset_statistics,
             inactive_update_rule=args.inactive_update_rule,
             inactive_lr_scale=args.inactive_lr_scale,
-            # galore specific
+            # coord specific
             coord_choice=args.coord_choice,
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
             # sgd specific
             lr=args.lr, momentum=args.beta1, dampening=args.dampening, weight_decay=args.weight_decay, nesterov=args.nesterov, sign_update=args.sgd_sign_update)
     elif args.optimizer.lower() == "block_sgd":
@@ -370,9 +466,21 @@ def get_optimizer(param_groups, args, model=None):
             reset_statistics=args.reset_statistics,
             inactive_update_rule=args.inactive_update_rule,
             inactive_lr_scale=args.inactive_lr_scale,
-            # coord specific
+            # block specific
             block_order=args.block_order,
-            # lion specific
+            # Dynamic parameters
+            use_dynamic_rho=args.use_dynamic_rho,
+            dynamic_rho_start=args.dynamic_rho_start,
+            dynamic_rho_end=args.dynamic_rho_end,
+            dynamic_rho_total_steps=args.dynamic_rho_total_steps,
+            use_dynamic_t=args.use_dynamic_t,
+            dynamic_t_start_freq=args.dynamic_t_start_freq,
+            dynamic_t_max_freq=args.dynamic_t_max_freq,
+            dynamic_t_eval_steps=args.dynamic_t_eval_steps,
+            dynamic_t_loss_threshold_low=args.dynamic_t_loss_threshold_low,
+            dynamic_t_increase_factor=args.dynamic_t_increase_factor,
+            dynamic_t_loss_for_increase_threshold=args.dynamic_t_loss_for_increase_threshold,
+            # sgd specific
             lr=args.lr, momentum=args.beta1, dampening=args.dampening, weight_decay=args.weight_decay, nesterov=args.nesterov, sign_update=args.sgd_sign_update)
     elif args.optimizer.lower() == "badam":
         original_optimizer = torch.optim.Adam(param_groups, betas=(args.beta1, args.beta2), lr=args.lr, weight_decay=args.weight_decay, eps=args.eps, foreach=False, fused=False)

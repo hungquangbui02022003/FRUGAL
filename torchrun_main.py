@@ -85,6 +85,21 @@ def parse_args(args):
     parser.add_argument("--proj_embeds", default=False, action=argparse.BooleanOptionalAction)
     parser.add_argument("--proj_logits", default=False, action=argparse.BooleanOptionalAction)
 
+    # Dynamic Rho parameters
+    parser.add_argument("--use-dynamic-rho", action="store_true", help="Enable dynamic rho adjustment")
+    parser.add_argument("--dynamic-rho-start", type=float, default=0.25, help="Starting value of dynamic rho")
+    parser.add_argument("--dynamic-rho-end", type=float, default=0.05, help="Final value of dynamic rho")
+    parser.add_argument("--dynamic-rho-total-steps", type=int, default=200000, help="Steps over which to decay rho")
+
+    # Dynamic T parameters
+    parser.add_argument("--use-dynamic-t", action="store_true", help="Enable dynamic T update frequency adjustment")
+    parser.add_argument("--dynamic-t-start-freq", type=int, default=100, help="Starting T update frequency")
+    parser.add_argument("--dynamic-t-max-freq", type=int, default=1000, help="Maximum T update frequency")
+    parser.add_argument("--dynamic-t-eval-steps", type=int, default=5000, help="Steps between T update evaluations")
+    parser.add_argument("--dynamic-t-loss-threshold-low", type=float, default=0.005, help="Loss change threshold for T increase")
+    parser.add_argument("--dynamic-t-increase-factor", type=float, default=1.5, help="Factor to increase T by")
+    parser.add_argument("--dynamic-t-loss-for-increase-threshold", type=float, default=20.0, help="Loss threshold for T increase")
+
     # Galore parameters
     parser.add_argument("--proj_side", type=str, default="std", choices=["std", "reverse_std", "right", "left", "full"])
     parser.add_argument("--proj_type", type=str, default="svd", choices=["svd", "random", "randperm"])
@@ -476,13 +491,33 @@ def main(args):
                     model, preprocess_batched, pad_idx, global_rank, world_size, device, args.eval_batch_size
                 )
                 torch.cuda.empty_cache()
+                
+                # Update dynamic T frequency if enabled
+                if args.use_dynamic_t:
+                    optimizer.update_t_freq_if_needed(total_loss)
+                    logger.info(f"Updated T frequency to {optimizer.param_groups[1].get('current_t_update_freq', args.update_gap)} based on validation loss {total_loss}")
+                
                 if global_rank == 0:
-                    wandb.log({
+                    wandb_log_dict = {
                         "final_eval_loss": total_loss,
                         "final_eval_tokens": evaluated_on_tokens,
-                        },
-                        step=update_step,
-                    )
+                    }
+                    
+                    # Log dynamic parameters if enabled
+                    if args.use_dynamic_rho:
+                        for group in optimizer.param_groups:
+                            if "current_rho" in group:
+                                wandb_log_dict["current_rho"] = group["current_rho"]
+                                break
+                                
+                    if args.use_dynamic_t:
+                        for group in optimizer.param_groups:
+                            if "current_t_update_freq" in group:
+                                wandb_log_dict["current_t_update_freq"] = group["current_t_update_freq"]
+                                break
+                                
+                    wandb.log(wandb_log_dict, step=update_step)
+                
                 logger.info(f"Eval loss at step {update_step}: {total_loss}")
 
             # save checkpoint by save_every

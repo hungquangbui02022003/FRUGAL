@@ -24,6 +24,54 @@ The source code for **FRUGAL** is located in the `frugal` directory. The file `p
 
 - `inactive_lr_scale`: A multiplier for the learning rate on state-free parameters. It is set to `1.0` for pre-training and `0.1` for fine-tuning in main experiments.
 
+### Dynamic Rho and Dynamic T Update Frequency
+
+FRUGAL now supports dynamic adjustment of two key parameters:
+
+#### 1. Dynamic Rho (State-full Space Ratio)
+
+This feature allows the ratio of state-full parameters to decrease linearly over time, potentially saving more memory as training progresses:
+
+- `use-dynamic-rho`: Enable dynamic rho adjustment (boolean flag)
+- `dynamic-rho-start`: Starting value of rho (default: 0.25)
+- `dynamic-rho-end`: Final value of rho (default: 0.05)
+- `dynamic-rho-total-steps`: Number of steps over which to decay rho (default: 200000)
+
+The rho value is calculated using a linear decay formula:
+```
+current_rho = max(dynamic_rho_end, dynamic_rho_start - (dynamic_rho_start - dynamic_rho_end) * (current_step / dynamic_rho_total_steps))
+```
+
+#### 2. Dynamic T Update Frequency
+
+This feature automatically adjusts the state-full subspace update frequency based on validation loss:
+
+- `use-dynamic-t`: Enable dynamic T update frequency (boolean flag)
+- `dynamic-t-start-freq`: Starting T update frequency (default: 100)
+- `dynamic-t-max-freq`: Maximum T update frequency (default: 1000)
+- `dynamic-t-eval-steps`: Steps between T update evaluations (default: 5000)
+- `dynamic-t-loss-threshold-low`: Loss change threshold for T increase (default: 0.005)
+- `dynamic-t-increase-factor`: Factor to increase T by (default: 1.5)
+- `dynamic-t-loss-for-increase-threshold`: Loss threshold for T increase (default: 20.0)
+
+When the change in validation loss is small and below threshold, the T frequency is increased to further save computation.
+
+### Example Usage
+
+```bash
+# Using FRUGAL with default static parameters
+python torchrun_main.py --optimizer block_adamw --density 0.25 --update_gap 200 [other args]
+
+# Using FRUGAL with dynamic rho
+python torchrun_main.py --optimizer block_adamw --use-dynamic-rho --dynamic-rho-start 0.25 --dynamic-rho-end 0.05 --dynamic-rho-total-steps 200000 --update_gap 200 [other args]
+
+# Using FRUGAL with dynamic T frequency
+python torchrun_main.py --optimizer block_adamw --density 0.25 --use-dynamic-t --dynamic-t-start-freq 100 --dynamic-t-max-freq 1000 --dynamic-t-eval-steps 5000 [other args]
+
+# Using FRUGAL with both dynamic features
+python torchrun_main.py --optimizer block_adamw --use-dynamic-rho --dynamic-rho-start 0.25 --dynamic-rho-end 0.05 --dynamic-rho-total-steps 200000 --use-dynamic-t --dynamic-t-start-freq 100 --dynamic-t-max-freq 1000 [other args]
+```
+
 Additionally, there are parameters specific to the types of projections:
 
 - For `GaloreOptimizer`, there are parameters `proj_side` and `proj_type`. The `proj_side` parameter, derived from [Galore (Zhao et al., 2024)](https://arxiv.org/abs/2403.03507), determines which matrix from the SVD is used for projection onto the low-rank subspace. The `proj_type` parameter allows for selecting among three projection matrices: `svd`, `random`, and `randperm` for SVD-like, random semi-orthogonal, and random permutation of the columns, respectively. Default value is `svd`.
@@ -66,3 +114,4 @@ The main code for fine-tuning is in `run_glue.py` and is an adaptation of the `r
 ## Additional experiments
 
 Notebook `principal_angles.ipynb` can be used to reproduce Figure 2. `galore_re-projection.ipynb` contains code for Appendix C experiments (Figure 3).
+"# FRUGAL-v2" 

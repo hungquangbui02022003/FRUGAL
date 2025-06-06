@@ -31,6 +31,18 @@ def check_args_torchrun_main(args):
         elif "adam" in args.optimizer:
             args.beta2 = 0.999
 
+    # Dynamic Rho validation
+    if args.use_dynamic_rho:
+        assert 0.0 <= args.dynamic_rho_end <= args.dynamic_rho_start <= 1.0, "dynamic_rho_end must be <= dynamic_rho_start and both in [0.0, 1.0]"
+        assert args.dynamic_rho_total_steps > 0, "dynamic_rho_total_steps must be positive"
+
+    # Dynamic T validation
+    if args.use_dynamic_t:
+        assert args.dynamic_t_start_freq > 0, "dynamic_t_start_freq must be positive"
+        assert args.dynamic_t_max_freq >= args.dynamic_t_start_freq, "dynamic_t_max_freq must be >= dynamic_t_start_freq"
+        assert args.dynamic_t_eval_steps > 0, "dynamic_t_eval_steps must be positive"
+        assert args.dynamic_t_increase_factor > 1.0, "dynamic_t_increase_factor must be > 1.0"
+
     if not len(args.wandb_tags):
         get_pretraining_name_and_tags(args)
 
@@ -55,12 +67,27 @@ def check_args_torchrun_main(args):
 def check_args_trainer_finetuning(training_args, optimizer_args):
     if optimizer_args.optimizer.lower() == "frugal":
         optimizer_args.optimizer = "coord_adamw"
+    if optimizer_args.optimizer.lower() == "badam":
+        raise ValueError("There are no fine-tuning experiments with BAdam.")
+    
     if optimizer_args.beta2 is None:
         if "lion" in optimizer_args.optimizer:
             optimizer_args.beta2 = 0.99
         elif "adam" in optimizer_args.optimizer:
             optimizer_args.beta2 = 0.999
+            
+    # Dynamic Rho validation
+    if optimizer_args.use_dynamic_rho:
+        assert 0.0 <= optimizer_args.dynamic_rho_end <= optimizer_args.dynamic_rho_start <= 1.0, "dynamic_rho_end must be <= dynamic_rho_start and both in [0.0, 1.0]"
+        assert optimizer_args.dynamic_rho_total_steps > 0, "dynamic_rho_total_steps must be positive"
 
+    # Dynamic T validation
+    if optimizer_args.use_dynamic_t:
+        assert optimizer_args.dynamic_t_start_freq > 0, "dynamic_t_start_freq must be positive"
+        assert optimizer_args.dynamic_t_max_freq >= optimizer_args.dynamic_t_start_freq, "dynamic_t_max_freq must be >= dynamic_t_start_freq"
+        assert optimizer_args.dynamic_t_eval_steps > 0, "dynamic_t_eval_steps must be positive"
+        assert optimizer_args.dynamic_t_increase_factor > 1.0, "dynamic_t_increase_factor must be > 1.0"
+            
     get_finetuning_name_and_tags(training_args, optimizer_args)
 
     training_args.output_dir += training_args.run_name
@@ -105,6 +132,26 @@ def get_pretraining_name_and_tags(args):
 
     args.wandb_name += f"-seed-{args.seed}"
     args.wandb_tags += ['seed_' + str(args.seed)]
+
+    if args.use_dynamic_rho:
+        args.wandb_name += f"_dynrho_{args.dynamic_rho_start}_{args.dynamic_rho_end}"
+        args.wandb_tags.append("dynamic_rho")
+    else:
+        args.wandb_name += f"_rho_{args.density}"
+        
+    if args.use_dynamic_t:
+        args.wandb_name += f"_dynt_{args.dynamic_t_start_freq}_{args.dynamic_t_max_freq}"
+        args.wandb_tags.append("dynamic_t")
+    else:
+        args.wandb_name += f"_t_{args.update_gap}"
+    
+    args.wandb_name += f"_{args.lr}"
+    
+    if args.wandb_name_prefix is not None:
+        args.wandb_name = args.wandb_name_prefix + "_" + args.wandb_name
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    args.wandb_name = f"{args.wandb_name}_{timestamp}"
 
 def get_finetuning_name_and_tags(training_args, optimizer_args):
     training_args.run_name = ""
