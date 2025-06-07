@@ -255,9 +255,8 @@ class ProjOptimizer(Optimizer):
                         total_blocks = len(group["params"])
                         new_num_blocks = int(math.floor(group["current_rho"] * total_blocks))
                         
-                        # Ensure at least one active block if rho_end > 0
-                        if group["dynamic_rho_end"] > 0 and group["current_rho"] > 0 and new_num_blocks == 0:
-                            new_num_blocks = 1
+                        # No need to ensure at least one active block
+                        # Allow zero active blocks if that's what the calculation gives
                             
                         group["num_active_blocks"] = new_num_blocks
                         
@@ -594,9 +593,8 @@ class BlockOptimizer(ProjOptimizer):
             # reset
             self._deactivate_param(p)
             
-        # Ensure num_active_blocks is at least 1 if dynamic_rho_end > 0 and there are params
-        if group.get("use_dynamic_rho", False) and group["dynamic_rho_end"] > 0 and group["current_rho"] > 0:
-            group["num_active_blocks"] = max(1, group["num_active_blocks"])
+        # No need to ensure at least one active block
+        # Allow zero active blocks if that's what dynamic rho gives us
             
         if group["block_order"] == "random":
             current_blocks = torch.randperm(len(group["params"]))[:group["num_active_blocks"]]
